@@ -475,6 +475,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   input:focus, textarea:focus, select:focus{outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(11,22,40,0.10);}
   input::placeholder, textarea::placeholder{color:#9AA3AF; font-weight:400;}
   input:disabled{background:var(--tint); color:#9AA3AF; cursor:not-allowed;}
+  /* input[type=date] tem altura propria do seletor nativo do navegador, maior que os demais campos de texto */
+  input[type="date"]{height:42px; line-height:1.2; box-sizing:border-box;}
 
   .prefix-field, .suffix-field{position:relative;}
   .prefix-field > span, .suffix-field > span{
