@@ -457,7 +457,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   .row-2{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   @media (max-width:600px){ .row-2{grid-template-columns:1fr;} }
 
-  input[type="text"], input[type="date"], textarea, select{
+  input[type="text"], textarea, select{
     width:100%; background:var(--surface); border:1px solid var(--field); color:var(--text);
     font-family:'DM Sans', sans-serif; font-size:15.5px; font-weight:600;
     padding: var(--pad-y) var(--pad-r) var(--pad-y) var(--pad-l);
@@ -475,8 +475,6 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   input:focus, textarea:focus, select:focus{outline:none; border-color:var(--navy); box-shadow:0 0 0 3px rgba(11,22,40,0.10);}
   input::placeholder, textarea::placeholder{color:#9AA3AF; font-weight:400;}
   input:disabled{background:var(--tint); color:#9AA3AF; cursor:not-allowed;}
-  /* input[type=date] tem altura propria do seletor nativo do navegador, maior que os demais campos de texto */
-  input[type="date"]{height:42px; line-height:1.2; box-sizing:border-box;}
 
   .prefix-field, .suffix-field{position:relative;}
   .prefix-field > span, .suffix-field > span{
@@ -974,7 +972,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
       </div>
       <div class="field">
         <label for="dataOrcamento">Data de emissão</label>
-        <input type="date" id="dataOrcamento">
+        <input type="text" id="dataOrcamento" inputmode="numeric" placeholder="DD/MM/AAAA">
       </div>
     </div>
     <div class="row-2">
@@ -1559,7 +1557,6 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
     toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
   }
 
-  function formatarDataBR(iso){ const [a,m,d] = iso.split('-'); return `${d}/${m}/${a}`; }
 
   /* ============ ARMAZENAMENTO LOCAL ============ */
 
@@ -1622,7 +1619,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
     const proximo = proximoNumero($('numeroOrcamento').value);
     CAMPOS_CLIENTE.forEach(id => { $(id).value = ''; });
     $('numeroOrcamento').value = proximo;
-    $('dataOrcamento').value = new Date().toISOString().slice(0,10);
+    $('dataOrcamento').value = new Date().toLocaleDateString('pt-BR');
     salvarRascunho();
     mostrarToast('Novo orçamento ' + proximo + '. Marca e etapas mantidas.');
     window.scrollTo({top:0, behavior:'smooth'});
@@ -1777,10 +1774,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
     doc.text('ORÇAMENTO DE SERVIÇOS', m, y);
     y += 6.5;
 
-    const dataISO = $('dataOrcamento').value || new Date().toISOString().slice(0,10);
+    const dataTexto = $('dataOrcamento').value.trim() || new Date().toLocaleDateString('pt-BR');
     const numero = $('numeroOrcamento').value.trim();
     doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(74,85,104);
-    doc.text((numero ? 'Nº ' + numero + '  ·  ' : '') + MODELOS[modeloAtual].nome + '  ·  Emitido em ' + formatarDataBR(dataISO), m, y);
+    doc.text((numero ? 'Nº ' + numero + '  ·  ' : '') + MODELOS[modeloAtual].nome + '  ·  Emitido em ' + dataTexto, m, y);
     y += 12;
 
     const cliente = $('nomeCliente').value.trim() || 'Não informado';
@@ -1913,7 +1910,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   popularSelectModelos();
   const tinhaRascunho = carregarRascunho();
   if(!tinhaRascunho) carregarModelo(modeloAtual);
-  if(!$('dataOrcamento').value) $('dataOrcamento').value = new Date().toISOString().slice(0,10);
+  if(!$('dataOrcamento').value) $('dataOrcamento').value = new Date().toLocaleDateString('pt-BR');
   if(!$('numeroOrcamento').value) $('numeroOrcamento').value = `${new Date().getFullYear()}-001`;
 
   $('blocoParcelas').classList.toggle('active', $('formaRestante').value === 'parcelas');
